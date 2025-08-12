@@ -21,50 +21,59 @@ otherwise it will sendNACK signal to client.
 PROGRAM:
 
 CLIENT:
-
+```
 import socket
 
-s=socket.socket()
-
-s.bind(('localhost',8000))
-
+s = socket.socket()
+s.bind(('localhost', 8000))
 s.listen(5)
 
-c,addr=s.accept()
+c, addr = s.accept()
 
 while True:
- 
- i=input("Enter a data: ")
- 
- c.send(i.encode())
- 
- ack=c.recv(1024).decode()
- 
- if ack:
- 
- print(ack)
- 
- continue
-
-else:
- 
- c.close()
-
-break
-
+    i = input("Enter a data: ")
+    c.send(i.encode())
+    
+    ack = c.recv(1024).decode()
+    
+    if ack:
+        print(ack)
+        continue
+    else:
+        c.close()
+        break
+```
 SERVER:
 
+```
 import socket
 
-s=socket.socket()
+s = socket.socket()
+s.bind(('localhost', 8000))
+s.listen(5)
 
-s.connect(('localhost',8000))
+print("Server is listening on port 8000...")
+c, addr = s.accept()
+print(f"Connected with {addr}")
 
 while True:
- 
- print(s.recv(1024).decode())
- 
- s.send("Acknowledgement Recived".encode())
+    i = input("Enter a data (or 'exit' to quit): ")
+    c.send(i.encode())
+
+    if i.lower() == "exit":
+        print("Closing connection...")
+        c.close()
+        break
+
+    ack = c.recv(1024).decode()
+    if ack:
+        print("Client says:", ack)
+    else:
+        print("No acknowledgment received. Closing...")
+        c.close()
+        break
+
+```
 
 OUTPUT:
 
